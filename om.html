@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> 
+        <style>
+            body {
+                font-family: Arial, Helvetica, sans-serif;
+                /*background-color: black;*/
+            }
+
+            * {
+                box-sizing: border-box;
+            }
+
+            /* Add padding to containers */
+            .container {
+                padding: 16px;
+                background-color: white;
+            }
+
+            /* Full-width input fields */
+            input[type=text], input[type=password],textarea {
+                width: 100%;
+                padding: 5px;
+                margin: 0 0 13px 0;
+                display: inline-block;
+                border: 1px solid #000000;
+                background: #f1f1f1;
+            }
+
+            input[type=text]:focus, input[type=password]:focus,textarea:focus {
+                background-color: #ddd;
+                outline: none;
+            }
+
+            /* Overwrite default styles of hr */
+            hr {
+                border: 1px solid #f1f1f1;
+                margin-bottom: 25px;
+            }
+
+            /* Set a style for the submit button */
+            .registerbtn {
+                background-color: #4CAF50;
+                color: white;
+                padding: 16px 20px;
+                margin: 8px 0;
+                border: none;
+                cursor: pointer;
+                width: 100%;
+                opacity: 0.9;
+            }
+
+            .registerbtn:hover {
+                opacity: 1;
+            }
+
+            /* Add a blue text color to links */
+            a {
+                color: dodgerblue;
+            }
+
+            /* Set a grey background color and center the text of the "sign in" section */
+            .signin {
+                background-color: #f1f1f1;
+                text-align: center;
+            }
+
+            .loader {
+                position: absolute;
+                left: 50%;
+                top: 30%;
+                z-index: 1;
+                width: 150px;
+                height: 150px;
+                margin: -75px 0 0 -75px;
+                border: 16px solid #f3f3f3;
+                border-radius: 50%;
+                border-top: 16px solid #3498db;
+                width: 120px;
+                height: 120px;
+                -webkit-animation: spin 2s linear infinite;
+                animation: spin 2s linear infinite;
+            }
+
+            /* Safari */
+            @-webkit-keyframes spin {
+                0% { -webkit-transform: rotate(0deg); }
+                100% { -webkit-transform: rotate(360deg); }
+            }
+
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+            table{
+                width: 100%;
+            }
+            th{
+                background-color: lightgray;
+                height: 35px;
+            }
+        </style>
+
+        <script type="text/javascript">
+//            myStorage = window.localStorage;
+            var e_array = [], m_array = [];
+            e_array = ["u", "a", "g"];
+            m_array = ["उ", "अ", "ग"];
+            function getTranslateArr() {
+                e_array = ["u", "a", "g"];
+                m_array = ["उ", "अ", "ग"];
+            }
+            function convert() {
+
+                var converted_str = "";
+                var str = (document.getElementById("english").value).split("");
+                for (var i = 0; i < str.length; i++) {
+                    if (str[i].trim().length === 0) {
+                        converted_str += " ";
+                    } else if (e_array.indexOf(str[i]) > 0) {
+                        converted_str += m_array[e_array.indexOf(str[i])];
+                    } else {
+                        converted_str += str[i];
+                    }
+                }
+                document.getElementById("marathi").value = converted_str;
+
+            }
+
+            var row_id = 1;
+            function getCookie(cname) {
+                var name = cname + "=";
+                var decodedCookie = decodeURIComponent(document.cookie);
+                var ca = decodedCookie.split(';');
+                for (var i = 0; i < ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0) === ' ') {
+                        c = c.substring(1);
+                    }
+                    if (c.indexOf(name) === 0) {
+                        return c.substring(name.length, c.length);
+                    }
+                }
+                return "";
+            }
+
+
+            function getData() {
+//                if (myStorage.getItem("e_array").length > 0) {
+//                    JSON.parse(myStorage.getItem("names"));
+//                    e_array = JSON.parse(myStorage.getItem("e_array"));
+//                    m_array = JSON.parse(myStorage.getItem("m_array"));
+//                }
+                var e_arr = getCookie("e_array");
+                if (e_arr !== "") {
+                    e_array = JSON.parse(e_arr);
+                }
+                var m_arr = getCookie("m_array");
+                if (m_arr !== "") {
+                    m_array = JSON.parse(m_arr);
+                }
+            }
+            function showTable() {
+                var tbody = "";
+                for (var i = 0; i < e_array.length; i++) {
+                    tbody += "<tr id='" + row_id + "'>";
+                    tbody += "<td><input type='text' name='e_arr[]' value=" + e_array[i] + " id='e_arr_" + row_id + "'></td>";
+                    tbody += "<td><input type='text' name='m_arr[]' value=" + m_array[i] + " id='m_arr_" + row_id + "'></td>";
+                    tbody += "<td><a  href='javascript:void(0)' style='color: red;' onclick='return deleteElement(" + row_id + ");'>X</a></td>";
+                    tbody += "</tr>";
+                    row_id++;
+                }
+                document.getElementById("tbody").innerHTML = tbody;
+            }
+
+            function addRow() {
+                // Find a <table> element with id="myTable":
+                var table = document.getElementById("table");
+                // Create an empty <tr> element and add it to the 1st position of the table:
+                var row = table.insertRow(-1);
+                row.setAttribute("id", row_id);
+                // Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
+                var cell1 = row.insertCell(0);
+                var cell2 = row.insertCell(1);
+                var cell3 = row.insertCell(2);
+                // Add some text to the new cells:
+                cell1.innerHTML = "<input type='text' name='e_arr[]' value='' id='e_arr_" + row_id + "'>";
+                cell2.innerHTML = "<input type='text' name='m_arr[]' value='' id='m_arr_" + row_id + "'>";
+                cell3.innerHTML = "<a  href='javascript:void(0)' style='color: red;' onclick='return deleteElement(" + row_id + ");'>X<a>";
+                row_id++;
+            }
+
+            function deleteElement(id) {
+                var el = document.getElementById(id);
+                el.parentNode.removeChild(el);
+                return false;
+            }
+
+            function saveData() {
+                document.getElementById("loader").style.display = "block";
+                var e_new_array = [], m_new_array = [];
+                var e_arr = document.getElementsByName('e_arr[]');
+                var m_arr = document.getElementsByName('m_arr[]');
+                for (var i = 0; i < e_arr.length; i++) {
+                    e_new_array.push(e_arr[i].value);
+                    m_new_array.push(m_arr[i].value);
+                }
+
+                var d = new Date();
+                d.setTime(d.getTime() + (500 * 24 * 60 * 60 * 1000));
+                var expires = "expires=" + d.toGMTString();
+                document.cookie = "e_array=" + JSON.stringify(e_new_array) + ";" + expires + ";path=/";
+                document.cookie = "m_array=" + JSON.stringify(m_new_array) + ";" + expires + ";path=/";
+//                myStorage.setItem("e_array", JSON.stringify(e_new_array));
+//                myStorage.setItem("m_array", JSON.stringify(m_new_array));
+                setTimeout(function () {
+                    document.getElementById("loader").style.display = "none";
+                    document.getElementById("msg").innerHTML = "Saved Successfully...!!!";
+                    setTimeout(function () {
+                        document.getElementById("msg").innerHTML = "";
+                    }, 2000);
+                }, 2000);
+            }
+            function showsSection(section1, section2) {
+                getData();
+                if (section1 == "settings") {
+                    showTable();
+                }
+                document.getElementById(section1).style.display = "block";
+                document.getElementById(section2).style.display = "none";
+
+            }
+            function resetData() {
+//                myStorage.setItem("e_array", "");
+//                myStorage.setItem("e_array", "");
+                document.cookie = "e_array=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                document.cookie = "e_array=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                location.reload();
+            }
+
+        </script>
+    </head>
+    <body>
+
+        <div class="container">
+            <div id="translater">
+                <h1>Translator</h1>
+                <button type="button" onclick="showsSection('settings', 'translater');" style="margin-left: 81%;">Settings</button>
+                <!--<a href="#" onclick="showsSection('settings', 'translater');" style="margin-left: 80%;">Settings</a>-->
+                <hr>
+                <label for="marathi"><b>Marathi</b></label>
+                <textarea placeholder="In Marathi" name="marathi" id="marathi" rows="8"></textarea>
+                <label for="english"><b>English</b></label>
+                <textarea placeholder="In English" name="english" id="english" rows="8" onkeyup="convert();"></textarea>
+
+                <!--<button type="submit" class="registerbtn">Register</button>-->
+            </div>
+            <div id="settings" style="display: none;">
+                <h1>Settings</h1>
+                <p id="msg" style="background-color: #f1f1f1;color: #009900"></p>
+                <!--<a href="#" onclick="showsSection('translater', 'settings');" style="margin-left: 140%;">Translator</a>-->
+                <button type="button" onclick="showsSection('translater', 'settings');" style="margin-left: 81%;">Translator</button>
+                <hr>
+                <div>
+                    <div class="loader" id="loader" style="display: none;"></div>
+                    <table id="table">
+                        <thead>
+                            <tr>
+                                <th>English</th>
+                                <th>Marathi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody">
+                        </tbody>
+                    </table>
+                </div>
+                <div style="margin-left: 60%;">
+                    <a href="javascript:void(0)" onclick="addRow();">Add New</a>
+                    <a href="javascript:void(0)" onclick="resetData();">Reset</a>
+                </div>
+                <div>
+                    <button type="button" class="registerbtn" onclick="saveData()">Save</button>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+
